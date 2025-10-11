@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { fileUploader } from "../../helper/fileUploader";
 import { Admin, Doctor, UserRole } from "@prisma/client";
 
+
 const createPatient = async (req: Request) => {
 
     if (req.file) {
@@ -95,10 +96,21 @@ const createDoctor = async (req: Request): Promise<Doctor> => {
     return result;
 };
 
+// const getAllFromDB = async () => {
+//     const result = await prisma.user.findMany();
+//     return result
+// }
+
+const getAllFromDB = async () => {
+    const result = await prisma.user.findMany();
+    return result
+}
+
 
 
 export const UserService = {
     createPatient,
     createAdmin,
     createDoctor,
+    getAllFromDB
 }
