@@ -33,6 +33,8 @@ const insertIntoDB = async (payload: any) => {
             )
         )
 
+        console.log({ startDateTime, endDateTime });
+
         while (startDateTime < endDateTime) {
             const slotStartDateTime = startDateTime; // 10:30
             const slotEndDateTime = addMinutes(startDateTime, intervalTime); // 11:00
@@ -41,6 +43,8 @@ const insertIntoDB = async (payload: any) => {
                 startDateTime: slotStartDateTime,
                 endDateTime: slotEndDateTime
             }
+
+            console.log(scheduleData);
 
             const existingSchedule = await prisma.schedule.findFirst({
                 where: scheduleData
@@ -60,4 +64,10 @@ const insertIntoDB = async (payload: any) => {
     }
 
     return schedules;
+}
+
+export const ScheduleService = {
+    insertIntoDB,
+    // schedulesForDoctor,
+    // deleteScheduleFromDB
 }
