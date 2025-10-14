@@ -14,6 +14,8 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
     })
 });
 
+
+
 export const ScheduleController = {
     insertIntoDB,
     // schedulesForDoctor,
