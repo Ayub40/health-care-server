@@ -113,6 +113,8 @@ const schedulesForDoctor = async (
         }
     });
 
+    // console.log(doctorSchedules);
+
     const doctorScheduleIds = doctorSchedules.map(schedule => schedule.scheduleId);
 
     const result = await prisma.schedule.findMany({
