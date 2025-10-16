@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
 import { doctorSearchableFields } from "./doctor.constant";
 import { prisma } from "../../shared/prisma";
+import { IDoctorUpdateInput } from "./doctor.interface";
 
 const getAllFromDB = async (filters: any, options: IOptions) => {
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
@@ -81,6 +82,65 @@ const getAllFromDB = async (filters: any, options: IOptions) => {
 }
 
 
+const updateIntoDB = async (id: string, payload: Partial<IDoctorUpdateInput>) => {
+    const doctorInfo = await prisma.doctor.findUniqueOrThrow({
+        where: {
+            id
+        }
+    });
+
+    const { specialties, ...doctorData } = payload;
+
+    return await prisma.$transaction(async (tnx) => {
+        if (specialties && specialties.length > 0) {
+            const deleteSpecialtyIds = specialties.filter((specialty) => specialty.isDeleted);
+
+            for (const specialty of deleteSpecialtyIds) {
+                await tnx.doctorSpecialties.deleteMany({
+                    where: {
+                        doctorId: id,
+                        specialitiesId: specialty.specialtyId
+                    }
+                })
+            }
+
+            const createSpecialtyIds = specialties.filter((specialty) => !specialty.isDeleted);
+
+            for (const specialty of createSpecialtyIds) {
+                await tnx.doctorSpecialties.create({
+                    data: {
+                        doctorId: id,
+                        specialitiesId: specialty.specialtyId
+                    }
+                })
+            }
+
+        }
+
+        const updatedData = await tnx.doctor.update({
+            where: {
+                id: doctorInfo.id
+            },
+            data: doctorData,
+            include: {
+                doctorSpecialties: {
+                    include: {
+                        specialities: true
+                    }
+                }
+            }
+
+            //  doctor - doctorSpecailties - specialities 
+        })
+
+        return updatedData
+    })
+
+
+}
+
+
 export const DoctorService = {
     getAllFromDB,
+    updateIntoDB
 }
