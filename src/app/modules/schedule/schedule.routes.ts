@@ -14,12 +14,14 @@ router.get(
 
 router.post(
     "/",
+    auth(UserRole.ADMIN),
     ScheduleController.insertIntoDB
 )
 
 router.delete(
     // ekhane ("/:id" deoa hoyse,, tai controller file eoo "id" name dite hobe)
     "/:id",
+    auth(UserRole.ADMIN),
     ScheduleController.deleteScheduleFromDB
 )
 
