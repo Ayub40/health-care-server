@@ -91,6 +91,7 @@ const updateIntoDB = async (id: string, payload: Partial<IDoctorUpdateInput>) =>
 
     const { specialties, ...doctorData } = payload;
 
+    // eki sathe onokgolo query use hoyse ( getAllFromDB, updateIntoDB,, etc.) ei jonno transaction use kora hoyse,, (.tnx er jaigai age "prisma" silo)
     return await prisma.$transaction(async (tnx) => {
         if (specialties && specialties.length > 0) {
             const deleteSpecialtyIds = specialties.filter((specialty) => specialty.isDeleted);
