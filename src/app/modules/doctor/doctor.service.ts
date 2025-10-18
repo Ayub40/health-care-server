@@ -1,4 +1,4 @@
-import { Doctor, Prisma } from "@prisma/client";
+import { Doctor, Prisma, UserStatus } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
 import { doctorSearchableFields } from "./doctor.constant";
 import { prisma } from "../../shared/prisma";
@@ -183,6 +183,28 @@ const deleteFromDB = async (id: string): Promise<Doctor> => {
     });
 };
 
+const softDelete = async (id: string): Promise<Doctor> => {
+    return await prisma.$transaction(async (transactionClient) => {
+        const deleteDoctor = await transactionClient.doctor.update({
+            where: { id },
+            data: {
+                isDeleted: true,
+            },
+        });
+
+        await transactionClient.user.update({
+            where: {
+                email: deleteDoctor.email,
+            },
+            data: {
+                status: UserStatus.DELETED,
+            },
+        });
+
+        return deleteDoctor;
+    });
+};
+
 const getAISuggestions = async (payload: { symptoms: string }) => {
     if (!(payload && payload.symptoms)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "symptoms is required!")
@@ -241,5 +263,6 @@ export const DoctorService = {
     updateIntoDB,
     getByIdFromDB,
     deleteFromDB,
+    softDelete,
     getAISuggestions
 }
