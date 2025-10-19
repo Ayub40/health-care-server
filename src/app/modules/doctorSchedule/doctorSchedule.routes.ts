@@ -14,4 +14,10 @@ router.post(
     DoctorScheduleController.insertIntoDB
 )
 
+// router.get(
+//     "/",
+// auth(UserRole.ADMIN),
+//     DoctorScheduleController.getAllFromDB
+// );
+
 export const doctorScheduleRoutes = router;

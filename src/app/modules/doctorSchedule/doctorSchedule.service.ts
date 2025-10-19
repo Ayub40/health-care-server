@@ -22,6 +22,19 @@ const insertIntoDB = async (user: IJWTPayload, payload: {
     });
 }
 
+// const getAllFromDB = async () => {
+//     return await prisma.doctorSchedules.findMany({
+//         include: {
+//             doctor: true,
+//             schedule: true
+//         },
+//         orderBy: {
+//             createdAt: "desc"
+//         }
+//     });
+// };
+
 export const DoctorScheduleService = {
-    insertIntoDB
+    insertIntoDB,
+    // getAllFromDB
 }
