@@ -47,8 +47,24 @@ const updateAppointmentStatus = catchAsync(async (req: Request & { user?: IJWTPa
     })
 })
 
+const getAllAppointments = catchAsync(async (req: Request, res: Response) => {
+    const filters = pick(req.query, ["searchTerm", "status", "paymentStatus"]);
+    const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
+
+    const result = await AppointmentService.getAllAppointments(filters, options);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "All appointments fetched successfully!",
+        data: result
+    });
+});
+
+
 export const AppointmentController = {
     createAppointment,
     getMyAppointment,
-    updateAppointmentStatus
+    updateAppointmentStatus,
+    getAllAppointments
 }
