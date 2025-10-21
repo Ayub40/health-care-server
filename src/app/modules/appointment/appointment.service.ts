@@ -228,8 +228,7 @@ const getAllAppointments = async (filters: any, options: IOptions) => {
         andConditions.push(...filterConditions);
     }
 
-    const whereConditions: Prisma.AppointmentWhereInput =
-        andConditions.length > 0 ? { AND: andConditions } : {};
+    const whereConditions: Prisma.AppointmentWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
     const result = await prisma.appointment.findMany({
         where: whereConditions,
