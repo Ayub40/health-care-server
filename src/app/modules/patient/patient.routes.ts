@@ -10,6 +10,11 @@ router.get(
     PatientController.getAllFromDB
 );
 
+router.get(
+    '/:id',
+    PatientController.getByIdFromDB
+);
+
 router.patch(
     '/',
     auth(UserRole.PATIENT),

@@ -23,10 +23,23 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
+
+    const { id } = req.params;
+    const result = await PatientService.getByIdFromDB(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Patient retrieval successfully',
+        data: result,
+    });
+});
+
 const updateIntoDB = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
     const user = req.user;
     const result = await PatientService.updateIntoDB(user as IJWTPayload, req.body);
-    
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -38,5 +51,6 @@ const updateIntoDB = catchAsync(async (req: Request & { user?: IJWTPayload }, re
 
 export const PatientController = {
     getAllFromDB,
+    getByIdFromDB,
     updateIntoDB
 };

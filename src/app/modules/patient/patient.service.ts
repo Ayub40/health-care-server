@@ -68,6 +68,16 @@ const getAllFromDB = async (
     };
 };
 
+const getByIdFromDB = async (id: string): Promise<Patient | null> => {
+    const result = await prisma.patient.findUnique({
+        where: {
+            id,
+            isDeleted: false,
+        },
+    });
+    return result;
+};
+
 const updateIntoDB = async (user: IJWTPayload, payload: any) => {
     const { medicalReport, patientHealthData, ...patientData } = payload;
 
@@ -126,5 +136,6 @@ const updateIntoDB = async (user: IJWTPayload, payload: any) => {
 
 export const PatientService = {
     getAllFromDB,
+    getByIdFromDB,
     updateIntoDB
 };
