@@ -78,6 +78,30 @@ const getByIdFromDB = async (id: string): Promise<Patient | null> => {
     return result;
 };
 
+const softDelete = async (id: string): Promise<Patient | null> => {
+    return await prisma.$transaction(async transactionClient => {
+        const deletedPatient = await transactionClient.patient.update({
+            where: { id },
+            data: {
+                isDeleted: true,
+            },
+        });
+
+        await transactionClient.user.update({
+            where: {
+                email: deletedPatient.email,
+            },
+            data: {
+                status: UserStatus.DELETED,
+            },
+        });
+
+        return deletedPatient;
+    });
+};
+
+// PatientHealthData, MedicalReport, patient
+
 const updateIntoDB = async (user: IJWTPayload, payload: any) => {
     const { medicalReport, patientHealthData, ...patientData } = payload;
 
@@ -137,5 +161,6 @@ const updateIntoDB = async (user: IJWTPayload, payload: any) => {
 export const PatientService = {
     getAllFromDB,
     getByIdFromDB,
+    softDelete,
     updateIntoDB
 };
