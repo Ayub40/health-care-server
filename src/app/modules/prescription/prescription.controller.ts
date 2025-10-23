@@ -1,8 +1,12 @@
+import httpStatus from 'http-status';
 import { Request, Response } from "express";
 import catchAsync from "../../shared/catchAsync";
 import { IJWTPayload } from "../../types/common";
 import { PrescriptionService } from "./prescription.service";
 import sendResponse from "../../shared/sendResponse";
+import { PatientService } from "../patient/patient.service";
+import pick from '../../helper/pick';
+
 
 const createPrescription = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
     const user = req.user;
@@ -16,6 +20,20 @@ const createPrescription = catchAsync(async (req: Request & { user?: IJWTPayload
     })
 })
 
+const patientPrescription = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
+    const user = req.user;
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder'])
+    const result = await PrescriptionService.patientPrescription(user as IJWTPayload, options);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Prescription fetched successfully',
+        meta: result.meta,
+        data: result.data
+    });
+});
+
 export const PrescriptionController = {
-    createPrescription
+    createPrescription,
+    patientPrescription
 }
