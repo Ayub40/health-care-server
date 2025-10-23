@@ -14,6 +14,12 @@ router.get(
     UserController.getAllFromDB
 )
 
+router.get(
+    '/me',
+    auth(UserRole.ADMIN, UserRole.DOCTOR, UserRole.PATIENT),
+    UserController.getMyProfile
+)
+
 router.post(
     "/create-patient",
     fileUploader.upload.single('file'),
@@ -21,7 +27,6 @@ router.post(
         req.body = UserValidation.createPatientValidationSchema.parse(JSON.parse(req.body.data))
         return UserController.createPatient(req, res, next)
     }
-
 )
 
 router.post(
