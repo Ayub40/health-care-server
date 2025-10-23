@@ -51,6 +51,14 @@ router.post(
     }
 );
 
+router.patch(
+    '/:id/status',
+    auth(UserRole.ADMIN),
+    UserController.changeProfileStatus
+);
+
+
+
 // create doctor
 // create admin
 

@@ -38,6 +38,10 @@ const moduleRoutes = [
         path: '/doctor',
         route: DoctorRoutes
     },
+    // {
+    //     path: '/admin',
+    //     route: AdminRoutes
+    // },
     {
         path: '/patient',
         route: PatientRoutes

@@ -1,7 +1,6 @@
 import { Request } from "express";
 import { prisma } from "../../shared/prisma";
 import bcrypt from "bcryptjs";
-// import { createPatientInput } from "./user.interface";
 import { fileUploader } from "../../helper/fileUploader";
 import { Admin, Doctor, Prisma, UserRole, UserStatus } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
@@ -166,6 +165,8 @@ const getMyProfile = async (user: IJWTPayload) => {
             email: user.email,
             status: UserStatus.ACTIVE
         },
+
+        // Kon kon field dekhate chai
         select: {
             id: true,
             email: true,
@@ -206,11 +207,29 @@ const getMyProfile = async (user: IJWTPayload) => {
 
 };
 
+const changeProfileStatus = async (id: string, payload: { status: UserStatus }) => {
+    const userData = await prisma.user.findUniqueOrThrow({
+        where: {
+            id
+        }
+    })
+
+    const updateUserStatus = await prisma.user.update({
+        where: {
+            id
+        },
+        data: payload
+    })
+
+    return updateUserStatus;
+};
+
 
 export const UserService = {
     createPatient,
     createAdmin,
     createDoctor,
     getAllFromDB,
-    getMyProfile
+    getMyProfile,
+    changeProfileStatus
 }
