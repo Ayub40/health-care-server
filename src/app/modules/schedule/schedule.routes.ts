@@ -25,5 +25,10 @@ router.delete(
     ScheduleController.deleteScheduleFromDB
 )
 
+router.delete(
+    "/",
+    auth(UserRole.ADMIN),
+    ScheduleController.deleteAllSchedules
+);
 
 export const ScheduleRoutes = router;

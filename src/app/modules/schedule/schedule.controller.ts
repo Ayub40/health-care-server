@@ -44,10 +44,21 @@ const deleteScheduleFromDB = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const deleteAllSchedules = catchAsync(async (req: Request, res: Response) => {
+    const result = await ScheduleService.deleteAllSchedules();
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "All schedules deleted successfully!",
+        data: result,
+    });
+});
 
 
 export const ScheduleController = {
     insertIntoDB,
     schedulesForDoctor,
-    deleteScheduleFromDB
+    deleteScheduleFromDB,
+    deleteAllSchedules
 }

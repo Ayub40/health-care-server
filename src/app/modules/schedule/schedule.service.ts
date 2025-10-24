@@ -159,9 +159,14 @@ const deleteScheduleFromDB = async (id: string) => {
     })
 }
 
+const deleteAllSchedules = async () => {
+    const result = await prisma.schedule.deleteMany({});
+    return result;
+};
 
 export const ScheduleService = {
     insertIntoDB,
     schedulesForDoctor,
-    deleteScheduleFromDB
+    deleteScheduleFromDB,
+    deleteAllSchedules
 }
