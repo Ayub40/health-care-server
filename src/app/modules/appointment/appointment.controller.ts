@@ -1,9 +1,11 @@
+import httpStatus from 'http-status';
 import { Request, Response } from "express";
 import catchAsync from "../../shared/catchAsync";
 import { AppointmentService } from "./appointment.service";
 import sendResponse from "../../shared/sendResponse";
 import { IJWTPayload } from "../../types/common";
 import pick from "../../helper/pick";
+import { appointmentFilterableFields } from "./appointment.constant";
 
 
 const createAppointment = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
@@ -47,17 +49,16 @@ const updateAppointmentStatus = catchAsync(async (req: Request & { user?: IJWTPa
     })
 })
 
-const getAllAppointments = catchAsync(async (req: Request, res: Response) => {
-    const filters = pick(req.query, ["searchTerm", "status", "paymentStatus"]);
-    const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
-
-    const result = await AppointmentService.getAllAppointments(filters, options);
-
+const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
+    const filters = pick(req.query, appointmentFilterableFields)
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = await AppointmentService.getAllFromDB(filters, options);
     sendResponse(res, {
-        statusCode: 200,
+        statusCode: httpStatus.OK,
         success: true,
-        message: "All appointments fetched successfully!",
-        data: result
+        message: 'Appointment retrieval successfully',
+        meta: result.meta,
+        data: result.data,
     });
 });
 
@@ -66,5 +67,5 @@ export const AppointmentController = {
     createAppointment,
     getMyAppointment,
     updateAppointmentStatus,
-    getAllAppointments
+    getAllFromDB
 }
