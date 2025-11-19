@@ -22,9 +22,9 @@ const createAppointment = catchAsync(async (req: Request & { user?: IJWTPayload 
 
 const getMyAppointment = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
     const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
-    const fillters = pick(req.query, ["status", "paymentStatus"])
+    const filters = pick(req.query, ["status", "paymentStatus"])
     const user = req.user;
-    const result = await AppointmentService.getMyAppointment(user as IJWTPayload, fillters, options);
+    const result = await AppointmentService.getMyAppointment(user as IJWTPayload, filters, options);
 
     sendResponse(res, {
         statusCode: 200,

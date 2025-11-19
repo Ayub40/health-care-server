@@ -19,10 +19,10 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
 
 const schedulesForDoctor = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
     const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
-    const fillters = pick(req.query, ["startDateTime", "endDateTime"])
+    const filters = pick(req.query, ["startDateTime", "endDateTime"])
 
     const user = req.user;
-    const result = await ScheduleService.schedulesForDoctor(user as IJWTPayload, fillters, options);
+    const result = await ScheduleService.schedulesForDoctor(user as IJWTPayload, filters, options);
 
     sendResponse(res, {
         statusCode: 200,

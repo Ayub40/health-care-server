@@ -1,13 +1,15 @@
 import { Patient, Prisma, UserStatus } from '@prisma/client';
-import { IPatientFilterRequest } from './patient.interface';
-import { IOptions, paginationHelper } from '../../helper/paginationHelper';
-import { patientSearchableFields } from './patient.constant';
+import { IPaginationOptions } from '../../interfaces/pagination';
 import { prisma } from '../../shared/prisma';
-import { IJWTPayload } from '../../types/common';
+import { IPatientFilterRequest, IPatientUpdate } from './patient.interface';
+import { paginationHelper } from '../../helper/paginationHelper';
+import { patientSearchableFields } from './patient.constant';
+
 
 const getAllFromDB = async (
     filters: IPatientFilterRequest,
-    options: IOptions,
+    options: IPaginationOptions,
+    includeHealthData: boolean = false // NEW PARAMETER
 ) => {
     const { limit, page, skip } = paginationHelper.calculatePagination(options);
     const { searchTerm, ...filterData } = filters;
@@ -16,10 +18,10 @@ const getAllFromDB = async (
 
     if (searchTerm) {
         andConditions.push({
-            OR: patientSearchableFields.map(field => ({
+            OR: patientSearchableFields.map((field) => ({
                 [field]: {
                     contains: searchTerm,
-                    mode: 'insensitive',
+                    mode: "insensitive",
                 },
             })),
         });
@@ -27,7 +29,7 @@ const getAllFromDB = async (
 
     if (Object.keys(filterData).length > 0) {
         andConditions.push({
-            AND: Object.keys(filterData).map(key => {
+            AND: Object.keys(filterData).map((key) => {
                 return {
                     [key]: {
                         equals: (filterData as any)[key],
@@ -36,12 +38,29 @@ const getAllFromDB = async (
             }),
         });
     }
+
     andConditions.push({
         isDeleted: false,
     });
 
     const whereConditions: Prisma.PatientWhereInput =
         andConditions.length > 0 ? { AND: andConditions } : {};
+
+    // Conditional include based on parameter
+    const includeClause = includeHealthData
+        ? {
+            medicalReport: true,
+            patientHealthData: true,
+        }
+        : {
+            medicalReport: {
+                select: {
+                    id: true,
+                    reportName: true,
+                    createdAt: true,
+                },
+            },
+        };
 
     const result = await prisma.patient.findMany({
         where: whereConditions,
@@ -51,9 +70,11 @@ const getAllFromDB = async (
             options.sortBy && options.sortOrder
                 ? { [options.sortBy]: options.sortOrder }
                 : {
-                    createdAt: 'desc',
-                }
+                    createdAt: "desc",
+                },
+        include: includeClause,
     });
+
     const total = await prisma.patient.count({
         where: whereConditions,
     });
@@ -68,15 +89,116 @@ const getAllFromDB = async (
     };
 };
 
+
 const getByIdFromDB = async (id: string): Promise<Patient | null> => {
     const result = await prisma.patient.findUnique({
         where: {
             id,
             isDeleted: false,
         },
+        include: {
+            //   medicalReport: true,
+            medicalReports: true,
+            patientHealthData: true,
+        },
     });
     return result;
 };
+
+
+const updateIntoDB = async (id: string, payload: Partial<IPatientUpdate>): Promise<Patient | null> => {
+
+    const { patientHealthData, medicalReport, ...patientData } = payload;
+
+    const patientInfo = await prisma.patient.findUniqueOrThrow({
+        where: {
+            id,
+            isDeleted: false
+        }
+    });
+
+    await prisma.$transaction(async (transactionClient) => {
+        //update patient data
+        await transactionClient.patient.update({
+            where: {
+                id
+            },
+            data: patientData,
+            include: {
+                patientHealthData: true,
+                // medicalReport: true
+                medicalReports: true
+            }
+        });
+
+        // create or update patient health data
+        if (patientHealthData) {
+            await transactionClient.patientHealthData.upsert({
+                where: {
+                    patientId: patientInfo.id
+                },
+                update: patientHealthData,
+                create: { ...patientHealthData, patientId: patientInfo.id }
+            });
+        };
+
+        if (medicalReport) {
+            await transactionClient.medicalReport.create({
+                data: { ...medicalReport, patientId: patientInfo.id }
+            })
+        }
+    })
+
+
+    const responseData = await prisma.patient.findUnique({
+        where: {
+            id: patientInfo.id
+        },
+        include: {
+            patientHealthData: true,
+            //   medicalReport: true
+            medicalReports: true
+        }
+    })
+    return responseData;
+
+};
+
+
+const deleteFromDB = async (id: string): Promise<Patient | null> => {
+    const result = await prisma.$transaction(async (tx) => {
+        // delete medical report
+        await tx.medicalReport.deleteMany({
+            where: {
+                patientId: id
+            }
+        });
+
+        // delete patient health data
+        await tx.patientHealthData.delete({
+            where: {
+                patientId: id
+            }
+        });
+
+        const deletedPatient = await tx.patient.delete({
+            where: {
+                id
+            }
+        });
+
+        await tx.user.delete({
+            where: {
+                email: deletedPatient.email
+            }
+        });
+
+        return deletedPatient;
+    });
+
+    return result;
+};
+
 
 const softDelete = async (id: string): Promise<Patient | null> => {
     return await prisma.$transaction(async transactionClient => {
@@ -100,67 +222,199 @@ const softDelete = async (id: string): Promise<Patient | null> => {
     });
 };
 
-// PatientHealthData, MedicalReport, patient
-
-const updateIntoDB = async (user: IJWTPayload, payload: any) => {
-    const { medicalReport, patientHealthData, ...patientData } = payload;
-
-    const patientInfo = await prisma.patient.findUniqueOrThrow({
-        where: {
-            email: user.email,
-            isDeleted: false
-        }
-    });
-
-    return await prisma.$transaction(async (tnx) => {
-        await tnx.patient.update({
-            where: {
-                id: patientInfo.id
-            },
-            data: patientData
-        })
-
-        if (patientHealthData) {
-            await tnx.patientHealthData.upsert({
-                where: {
-                    patientId: patientInfo.id
-                },
-                update: patientHealthData,
-                create: {
-                    ...patientHealthData,
-                    patientId: patientInfo.id
-                }
-            })
-        }
-
-        if (medicalReport) {
-            await tnx.medicalReport.create({
-                data: {
-                    ...medicalReport,
-                    patientId: patientInfo.id
-                }
-            })
-        }
-
-        const result = await tnx.patient.findUnique({
-            where: {
-                id: patientInfo.id
-            },
-            include: {
-                patientHealthData: true,
-                medicalReports: true
-            }
-        })
-        return result;
-    })
-
-
-
-}
 
 export const PatientService = {
     getAllFromDB,
     getByIdFromDB,
+    updateIntoDB,
+    deleteFromDB,
     softDelete,
-    updateIntoDB
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Patient, Prisma, UserStatus } from '@prisma/client';
+// import { IPatientFilterRequest } from './patient.interface';
+// import { IOptions, paginationHelper } from '../../helper/paginationHelper';
+// import { patientSearchableFields } from './patient.constant';
+// import { prisma } from '../../shared/prisma';
+// import { IJWTPayload } from '../../types/common';
+
+// const getAllFromDB = async (
+//     filters: IPatientFilterRequest,
+//     options: IOptions,
+// ) => {
+//     const { limit, page, skip } = paginationHelper.calculatePagination(options);
+//     const { searchTerm, ...filterData } = filters;
+
+//     const andConditions = [];
+
+//     if (searchTerm) {
+//         andConditions.push({
+//             OR: patientSearchableFields.map(field => ({
+//                 [field]: {
+//                     contains: searchTerm,
+//                     mode: 'insensitive',
+//                 },
+//             })),
+//         });
+//     }
+
+//     if (Object.keys(filterData).length > 0) {
+//         andConditions.push({
+//             AND: Object.keys(filterData).map(key => {
+//                 return {
+//                     [key]: {
+//                         equals: (filterData as any)[key],
+//                     },
+//                 };
+//             }),
+//         });
+//     }
+//     andConditions.push({
+//         isDeleted: false,
+//     });
+
+//     const whereConditions: Prisma.PatientWhereInput =
+//         andConditions.length > 0 ? { AND: andConditions } : {};
+
+//     const result = await prisma.patient.findMany({
+//         where: whereConditions,
+//         skip,
+//         take: limit,
+//         orderBy:
+//             options.sortBy && options.sortOrder
+//                 ? { [options.sortBy]: options.sortOrder }
+//                 : {
+//                     createdAt: 'desc',
+//                 }
+//     });
+//     const total = await prisma.patient.count({
+//         where: whereConditions,
+//     });
+
+//     return {
+//         meta: {
+//             total,
+//             page,
+//             limit,
+//         },
+//         data: result,
+//     };
+// };
+
+// const getByIdFromDB = async (id: string): Promise<Patient | null> => {
+//     const result = await prisma.patient.findUnique({
+//         where: {
+//             id,
+//             isDeleted: false,
+//         },
+//     });
+//     return result;
+// };
+
+// const softDelete = async (id: string): Promise<Patient | null> => {
+//     return await prisma.$transaction(async transactionClient => {
+//         const deletedPatient = await transactionClient.patient.update({
+//             where: { id },
+//             data: {
+//                 isDeleted: true,
+//             },
+//         });
+
+//         await transactionClient.user.update({
+//             where: {
+//                 email: deletedPatient.email,
+//             },
+//             data: {
+//                 status: UserStatus.DELETED,
+//             },
+//         });
+
+//         return deletedPatient;
+//     });
+// };
+
+// // PatientHealthData, MedicalReport, patient
+
+// const updateIntoDB = async (user: IJWTPayload, payload: any) => {
+//     const { medicalReport, patientHealthData, ...patientData } = payload;
+
+//     const patientInfo = await prisma.patient.findUniqueOrThrow({
+//         where: {
+//             email: user.email,
+//             isDeleted: false
+//         }
+//     });
+
+//     return await prisma.$transaction(async (tnx) => {
+//         await tnx.patient.update({
+//             where: {
+//                 id: patientInfo.id
+//             },
+//             data: patientData
+//         })
+
+//         if (patientHealthData) {
+//             await tnx.patientHealthData.upsert({
+//                 where: {
+//                     patientId: patientInfo.id
+//                 },
+//                 update: patientHealthData,
+//                 create: {
+//                     ...patientHealthData,
+//                     patientId: patientInfo.id
+//                 }
+//             })
+//         }
+
+//         if (medicalReport) {
+//             await tnx.medicalReport.create({
+//                 data: {
+//                     ...medicalReport,
+//                     patientId: patientInfo.id
+//                 }
+//             })
+//         }
+
+//         const result = await tnx.patient.findUnique({
+//             where: {
+//                 id: patientInfo.id
+//             },
+//             include: {
+//                 patientHealthData: true,
+//                 medicalReports: true
+//             }
+//         })
+//         return result;
+//     })
+
+
+
+// }
+
+// export const PatientService = {
+//     getAllFromDB,
+//     getByIdFromDB,
+//     softDelete,
+//     updateIntoDB
+// };

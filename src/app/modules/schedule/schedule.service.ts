@@ -72,11 +72,11 @@ const insertIntoDB = async (payload: any) => {
 
 const schedulesForDoctor = async (
     user: IJWTPayload,
-    fillters: any,
+    filters: any,
     options: IOptions
 ) => {
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
-    const { startDateTime: filterStartDateTime, endDateTime: filterEndDateTime } = fillters;
+    const { startDateTime: filterStartDateTime, endDateTime: filterEndDateTime } = filters;
 
     const andConditions: Prisma.ScheduleWhereInput[] = [];
 
