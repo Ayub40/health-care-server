@@ -1,13 +1,10 @@
 import { Doctor, Prisma, UserStatus } from "@prisma/client";
-// import { askOpenRouter } from "../../../helpers/openRouterClient";
-// import { paginationHelper } from "../../../helpers/paginationHelper";
 import { paginationHelper } from "../../helper/paginationHelper";
-// import prisma from "../../../shared/prisma";
 import { prisma } from "../../shared/prisma";
 import { IPaginationOptions } from "../../interfaces/pagination";
-// import { doctorSearchableFields } from "./doctor.constants";
 import { doctorSearchableFields } from "./doctor.constant";
 import { IDoctorFilterRequest, IDoctorUpdate } from "./doctor.interface";
+import { askOpenRouter } from "../../helper/openRouterClient";
 
 const getAllFromDB = async (
     filters: IDoctorFilterRequest,
@@ -316,7 +313,8 @@ const getAISuggestion = async (input: PatientInput) => {
             doctorSpecialties: {
                 include: { specialities: true },
             },
-            review: { select: { rating: true } },
+            // review: { select: { rating: true } },
+            reviews: { select: { rating: true } },
         },
     });
 
@@ -442,7 +440,8 @@ const getAllPublic = async (
                     specialities: true,
                 },
             },
-            review: {
+            // review: {
+            reviews: {
                 select: {
                     rating: true,
                     comment: true,
