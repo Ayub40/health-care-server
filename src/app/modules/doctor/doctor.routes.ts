@@ -9,7 +9,8 @@ router.get(
     DoctorController.getAllFromDB
 )
 
-router.post("/suggestion", DoctorController.getAISuggestions);
+// router.post("/suggestion", DoctorController.getAISuggestions);
+router.post("/suggestion", DoctorController.getAiSuggestion);
 
 router.get('/:id', DoctorController.getByIdFromDB);
 

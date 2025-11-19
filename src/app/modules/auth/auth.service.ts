@@ -22,11 +22,11 @@ const login = async (payload: { email: string, password: string }) => {
         throw new ApiError(httpStatus.BAD_REQUEST, "Password is incorrect!")
     }
 
-    const accessToken = jwtHelper.generateToken({ email: user.email, role: user.role }, config.jwt.jwt_secret as Secret, "1h");
+    const accessToken = jwtHelpers.generateToken({ email: user.email, role: user.role }, config.jwt.jwt_secret as Secret, "1h");
     console.log("JWT_SECRET:", config.jwt.jwt_secret);
 
 
-    const refreshToken = jwtHelper.generateToken({ email: user.email, role: user.role }, config.jwt.refresh_token_secret as Secret, "90d");
+    const refreshToken = jwtHelpers.generateToken({ email: user.email, role: user.role }, config.jwt.refresh_token_secret as Secret, "90d");
 
     return {
         accessToken,
@@ -38,7 +38,7 @@ const login = async (payload: { email: string, password: string }) => {
 const refreshToken = async (token: string) => {
     let decodedData;
     try {
-        decodedData = jwtHelper.verifyToken(token, config.jwt.refresh_token_secret as Secret);
+        decodedData = jwtHelpers.verifyToken(token, config.jwt.refresh_token_secret as Secret);
     }
     catch (err) {
         throw new Error("You are not authorized!")
@@ -51,7 +51,7 @@ const refreshToken = async (token: string) => {
         }
     });
 
-    const accessToken = jwtHelper.generateToken({
+    const accessToken = jwtHelpers.generateToken({
         email: userData.email,
         role: userData.role
     },
@@ -105,7 +105,7 @@ const forgotPassword = async (payload: { email: string }) => {
         }
     });
 
-    const resetPassToken = jwtHelper.generateToken(
+    const resetPassToken = jwtHelpers.generateToken(
         { email: userData.email, role: userData.role },
         config.jwt.reset_pass_secret as Secret,
         config.jwt.reset_pass_token_expires_in as string
@@ -140,7 +140,7 @@ const resetPassword = async (token: string, payload: { id: string, password: str
         }
     });
 
-    const isValidToken = jwtHelper.verifyToken(token, config.jwt.reset_pass_secret as Secret)
+    const isValidToken = jwtHelpers.verifyToken(token, config.jwt.reset_pass_secret as Secret)
 
     if (!isValidToken) {
         throw new ApiError(httpStatus.FORBIDDEN, "Forbidden!")
