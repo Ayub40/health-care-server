@@ -5,7 +5,7 @@ import { IJWTPayload } from "../../types/common";
 import { PrescriptionService } from "./prescription.service";
 import sendResponse from "../../shared/sendResponse";
 import { PatientService } from "../patient/patient.service";
-import pick from '../../helper/pick';
+import pick from '../../shared/pick';
 
 
 const createPrescription = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {

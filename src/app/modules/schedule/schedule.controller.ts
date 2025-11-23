@@ -3,7 +3,7 @@ import httpStatus from "http-status";
 import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
 // import pick from "../../../shared/pick";
-import pick from "../../helper/pick";
+import pick from "../../shared/pick";
 import { IAuthUser } from "../../interfaces/common";
 import { ScheduleService } from "./schedule.service";
 

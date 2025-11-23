@@ -4,7 +4,7 @@ import sendResponse from "../../shared/sendResponse";
 import { DoctorScheduleService } from "./doctorSchedule.service";
 import { IJWTPayload } from "../../types/common";
 import httpStatus from 'http-status';
-import pick from "../../helper/pick";
+import pick from "../../shared/pick";
 import { scheduleFilterableFields } from "./doctorSchedule.constant";
 
 

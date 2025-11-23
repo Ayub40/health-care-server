@@ -4,7 +4,7 @@ import catchAsync from "../../shared/catchAsync";
 import { AppointmentService } from "./appointment.service";
 import sendResponse from "../../shared/sendResponse";
 import { IJWTPayload } from "../../types/common";
-import pick from "../../helper/pick";
+import pick from "../../shared/pick";
 import { appointmentFilterableFields } from "./appointment.constant";
 
 

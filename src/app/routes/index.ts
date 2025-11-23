@@ -1,6 +1,6 @@
 import express from 'express';
 import { userRoutes } from '../modules/user/user.routes';
-import { authRoutes } from '../modules/auth/auth.routes';
+import { AuthRoutes } from '../modules/auth/auth.routes';
 import { ScheduleRoutes } from '../modules/schedule/schedule.routes';
 import { doctorScheduleRoutes } from '../modules/doctorSchedule/doctorSchedule.routes';
 import { SpecialtiesRoutes } from '../modules/specialties/specialties.routes';
@@ -22,7 +22,7 @@ const moduleRoutes = [
     },
     {
         path: '/auth',
-        route: authRoutes
+        route: AuthRoutes
     },
     {
         path: '/schedule',
@@ -65,6 +65,21 @@ const moduleRoutes = [
         route: MetaRoutes
     },
 ];
+
+console.log({
+    userRoutes,
+    AuthRoutes,
+    ScheduleRoutes,
+    doctorScheduleRoutes,
+    SpecialtiesRoutes,
+    DoctorRoutes,
+    AppointmentRoutes,
+    PrescriptionRoutes,
+    ReviewRoutes,
+    PatientRoutes,
+    MetaRoutes,
+    AdminRoutes,
+});
 
 moduleRoutes.forEach(route => router.use(route.path, route.route))
 

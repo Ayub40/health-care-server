@@ -1,12 +1,12 @@
-import httpStatus from 'http-status';
 import { Request, Response } from "express";
-import catchAsync from "../../shared/catchAsync";
 import { userService } from "./user.service";
+import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
-import pick from "../../helper/pick";
+import httpStatus from "http-status";
+import pick from "../../shared/pick";
 import { userFilterableFields } from "./user.constant";
-// import { IJWTPayload } from "../../types/common";
-import { IAuthUser } from '../../interfaces/common';
+
+import { IAuthUser } from "../../interfaces/common";
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
 
@@ -14,7 +14,7 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "Admin Created successfully!",
+        message: "Admin Created successfuly!",
         data: result
     })
 });
@@ -25,39 +25,21 @@ const createDoctor = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "Doctor Created successfully!",
+        message: "Doctor Created successfuly!",
         data: result
     })
 });
 
 const createPatient = catchAsync(async (req: Request, res: Response) => {
 
-    // const result = await UserService.createPatient(req.body);
     const result = await userService.createPatient(req);
-    // console.log(result);
-    // console.log(req.body);
-    // console.log(req);
-
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "Patient Created successfuly!",
-        // data: ""
         data: result
     })
 });
-
-
-// const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-//     const result = await UserService.getAllFromDB()
-
-//     sendResponse(res, {
-//         statusCode: 200,
-//         success: true,
-//         message: "Doctor Retrive successfuly!",
-//         data: result
-//     })
-// })
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     const filters = pick(req.query, userFilterableFields);
@@ -87,6 +69,7 @@ const changeProfileStatus = catchAsync(async (req: Request, res: Response) => {
     })
 });
 
+
 const getMyProfile = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
 
     const user = req.user;
@@ -115,9 +98,7 @@ const updateMyProfie = catchAsync(async (req: Request & { user?: IAuthUser }, re
     })
 });
 
-
-
-export const UserController = {
+export const userController = {
     createAdmin,
     createDoctor,
     createPatient,

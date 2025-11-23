@@ -1,20 +1,16 @@
-import express from 'express'
-import { AuthController } from './auth.controller';
-import auth from '../../middlewares/auth';
 import { UserRole } from '@prisma/client';
-
+import express from 'express';
+import auth from '../../middlewares/auth';
+import { authLimiter } from '../../middlewares/rateLimiter';
+import { AuthController } from './auth.controller';
 
 const router = express.Router();
 
-router.get(
-    "/me",
-    AuthController.getMe
-)
-
 router.post(
-    "/login",
-    AuthController.login
-)
+    '/login',
+    authLimiter,
+    AuthController.loginUser
+);
 
 router.post(
     '/refresh-token',
@@ -24,6 +20,7 @@ router.post(
 router.post(
     '/change-password',
     auth(
+        UserRole.SUPER_ADMIN,
         UserRole.ADMIN,
         UserRole.DOCTOR,
         UserRole.PATIENT
@@ -41,29 +38,9 @@ router.post(
     AuthController.resetPassword
 )
 
+router.get(
+    '/me',
+    AuthController.getMe
+)
 
-export const authRoutes = router;
-
-
-
-
-
-
-
-
-
-
-
-
-// import express from 'express'
-// import { AuthController } from './auth.controller';
-
-
-// const router = express.Router();
-
-// router.post(
-//     "/login",
-//     AuthController.login
-// )
-
-// export const authRoutes = router;
+export const AuthRoutes = router;

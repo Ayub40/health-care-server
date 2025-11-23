@@ -3,7 +3,7 @@ import sendResponse from '../../shared/sendResponse';
 import catchAsync from '../../shared/catchAsync';
 import httpStatus from 'http-status';
 import { DoctorService } from './doctor.service';
-import pick from '../../helper/pick';
+import pick from '../../shared/pick';
 import { doctorFilterableFields } from './doctor.constant';
 // import pick from '../../../shared/pick';
 
