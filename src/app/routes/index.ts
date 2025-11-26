@@ -2,7 +2,8 @@ import express from 'express';
 import { userRoutes } from '../modules/user/user.routes';
 import { AuthRoutes } from '../modules/auth/auth.routes';
 import { ScheduleRoutes } from '../modules/schedule/schedule.routes';
-import { doctorScheduleRoutes } from '../modules/doctorSchedule/doctorSchedule.routes';
+// import { doctorScheduleRoutes } from '../modules/doctorSchedule/doctorSchedule.routes';
+import { DoctorScheduleRoutes } from '../modules/doctorSchedule/doctorSchedule.routes';
 import { SpecialtiesRoutes } from '../modules/specialties/specialties.routes';
 import { DoctorRoutes } from '../modules/doctor/doctor.routes';
 import { AppointmentRoutes } from '../modules/appointment/appointment.routes';
@@ -30,7 +31,7 @@ const moduleRoutes = [
     },
     {
         path: '/doctor-schedule',
-        route: doctorScheduleRoutes
+        route: DoctorScheduleRoutes
     },
     {
         path: '/specialties',
@@ -66,20 +67,20 @@ const moduleRoutes = [
     },
 ];
 
-console.log({
-    userRoutes,
-    AuthRoutes,
-    ScheduleRoutes,
-    doctorScheduleRoutes,
-    SpecialtiesRoutes,
-    DoctorRoutes,
-    AppointmentRoutes,
-    PrescriptionRoutes,
-    ReviewRoutes,
-    PatientRoutes,
-    MetaRoutes,
-    AdminRoutes,
-});
+// console.log({
+//     userRoutes,
+//     AuthRoutes,
+//     ScheduleRoutes,
+//     doctorScheduleRoutes,
+//     SpecialtiesRoutes,
+//     DoctorRoutes,
+//     AppointmentRoutes,
+//     PrescriptionRoutes,
+//     ReviewRoutes,
+//     PatientRoutes,
+//     MetaRoutes,
+//     AdminRoutes,
+// });
 
 moduleRoutes.forEach(route => router.use(route.path, route.route))
 

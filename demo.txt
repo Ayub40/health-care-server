@@ -1,3 +1,10 @@
+Command:
+   1. pnpm dev
+   2.  
+
+
+
+
 Task: Admin and Patient er jonno update er kaj kora
 
 # Task-01

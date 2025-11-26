@@ -1,11 +1,26 @@
-import z from "zod";
+import { z } from 'zod';
 
-const createDoctorScheduleValidationSchema = z.object({
+const create = z.object({
     body: z.object({
-        scheduleIds: z.array(z.string())
-    })
-})
+        scheduleIds: z.array(z.string()),
+    }),
+});
 
 export const DoctorScheduleValidation = {
-    createDoctorScheduleValidationSchema
-}
+    create,
+};
+
+
+
+
+// import z from "zod";
+
+// const createDoctorScheduleValidationSchema = z.object({
+//     body: z.object({
+//         scheduleIds: z.array(z.string())
+//     })
+// })
+
+// export const DoctorScheduleValidation = {
+//     createDoctorScheduleValidationSchema
+// }
