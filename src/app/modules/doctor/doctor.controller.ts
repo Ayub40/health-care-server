@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import sendResponse from '../../shared/sendResponse';
-import catchAsync from '../../shared/catchAsync';
 import httpStatus from 'http-status';
+import catchAsync from '../../shared/catchAsync';
 import { DoctorService } from './doctor.service';
 import pick from '../../shared/pick';
 import { doctorFilterableFields } from './doctor.constant';
-// import pick from '../../../shared/pick';
+
 
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
