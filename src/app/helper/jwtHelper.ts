@@ -11,19 +11,16 @@ const generateToken = (payload: any, secret: Secret, expiresIn: string) => {
     );
 
     // console.log("🔑 GENERATED TOKEN:", token);
-    console.log("Token generated:", token);
-    console.log("Using secret:", secret);
+    // console.log("Using secret:", secret);
 
     return token;
 }
 
 const verifyToken = (token: string, secret: Secret) => {
+
     // console.log("🔍 VERIFY FUNCTION CALLED");
     // console.log("🔑 TOKEN RECEIVED:", token);
     // console.log("🔐 SECRET USED FOR VERIFY:", secret);
-
-    console.log("Token to verify:", token);
-    console.log("Secret for verify:", secret);
 
     return jwt.verify(token, secret) as JwtPayload
 }

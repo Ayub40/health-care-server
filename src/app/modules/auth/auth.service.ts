@@ -32,7 +32,7 @@ const loginUser = async (payload: {
         config.jwt.expires_in as string
     );
 
-    console.log(accessToken);
+    // console.log(accessToken);
 
     const refreshToken = jwtHelpers.generateToken({
         email: userData.email,
@@ -42,7 +42,7 @@ const loginUser = async (payload: {
         config.jwt.refresh_token_expires_in as string
     );
 
-    console.log(refreshToken);
+    // console.log(refreshToken);
 
     return {
         accessToken,
@@ -75,7 +75,7 @@ const refreshToken = async (token: string) => {
         config.jwt.expires_in as string
     );
 
-    console.log(accessToken);
+    // console.log(accessToken);
 
     const refreshToken = jwtHelpers.generateToken({
         email: userData.email,
@@ -85,7 +85,7 @@ const refreshToken = async (token: string) => {
         config.jwt.refresh_token_expires_in as string
     );
 
-    console.log(refreshToken);
+    // console.log(refreshToken);
 
     return {
         accessToken,
@@ -169,7 +169,10 @@ const resetPassword = async (token: string, payload: { id: string, password: str
         }
     });
 
-    const isValidToken = jwtHelpers.verifyToken(token, config.jwt.reset_pass_secret as Secret);
+    // const isValidToken = jwtHelpers.verifyToken(token, config.jwt.reset_pass_secret as Secret);
+
+    // login user er "accessToken" diye token asche, tai oi secret diye verify korte hobe
+    const isValidToken = jwtHelpers.verifyToken(token, config.jwt.jwt_secret as Secret);
 
     // console.log("Reset password token valid:", isValidToken);
 
