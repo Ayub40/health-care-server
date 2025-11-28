@@ -2,7 +2,7 @@ Command:
    1. pnpm dev
    2.  
 
-   
+
 Task: Admin and Patient er jonno update er kaj kora
 
 # Task-01
@@ -25,4 +25,6 @@ Task: Admin and Patient er jonno update er kaj kora
    * Implement **get admin by ID** functionality.
    * Implement **update admin by ID** functionality.
    * Implement **delete admin by ID** functionality.
+
+
 
