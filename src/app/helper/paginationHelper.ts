@@ -1,4 +1,4 @@
-type IOptions = {
+export type IOptions = {
     page?: number,
     limit?: number,
     sortOrder?: string,
