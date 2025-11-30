@@ -18,7 +18,8 @@ router.get(
  */
 router.get(
     '/:id',
-    auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.DOCTOR),
+    // auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.DOCTOR),
+    auth(UserRole.DOCTOR, UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.PATIENT),
     ScheduleController.getByIdFromDB
 );
 
