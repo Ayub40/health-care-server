@@ -3,6 +3,8 @@ import * as bcrypt from 'bcryptjs';
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
 import config from "../../../config";
+// import { jwtHelpers } from "../../../helpers/jwtHelpers";
+// import prisma from "../../../shared/prisma";
 import { jwtHelpers } from "../../helper/jwtHelper";
 import { prisma } from "../../shared/prisma";
 import ApiError from "../../errors/ApiError";
@@ -32,8 +34,6 @@ const loginUser = async (payload: {
         config.jwt.expires_in as string
     );
 
-    // console.log(accessToken);
-
     const refreshToken = jwtHelpers.generateToken({
         email: userData.email,
         role: userData.role
@@ -41,8 +41,6 @@ const loginUser = async (payload: {
         config.jwt.refresh_token_secret as Secret,
         config.jwt.refresh_token_expires_in as string
     );
-
-    // console.log(refreshToken);
 
     return {
         accessToken,
@@ -75,8 +73,6 @@ const refreshToken = async (token: string) => {
         config.jwt.expires_in as string
     );
 
-    // console.log(accessToken);
-
     const refreshToken = jwtHelpers.generateToken({
         email: userData.email,
         role: userData.role
@@ -84,8 +80,6 @@ const refreshToken = async (token: string) => {
         config.jwt.refresh_token_secret as Secret,
         config.jwt.refresh_token_expires_in as string
     );
-
-    // console.log(refreshToken);
 
     return {
         accessToken,
@@ -169,12 +163,7 @@ const resetPassword = async (token: string, payload: { id: string, password: str
         }
     });
 
-    // const isValidToken = jwtHelpers.verifyToken(token, config.jwt.reset_pass_secret as Secret);
-
-    // login user er "accessToken" diye token asche, tai oi secret diye verify korte hobe
-    const isValidToken = jwtHelpers.verifyToken(token, config.jwt.jwt_secret as Secret);
-
-    // console.log("Reset password token valid:", isValidToken);
+    const isValidToken = jwtHelpers.verifyToken(token, config.jwt.reset_pass_secret as Secret)
 
     if (!isValidToken) {
         throw new ApiError(httpStatus.FORBIDDEN, "Forbidden!")
@@ -194,7 +183,6 @@ const resetPassword = async (token: string, payload: { id: string, password: str
         }
     })
 };
-
 
 const getMe = async (user: any) => {
     const accessToken = user.accessToken;

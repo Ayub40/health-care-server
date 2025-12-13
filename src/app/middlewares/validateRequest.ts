@@ -6,11 +6,11 @@ const validateRequest = (schema: ZodObject) => async (req: Request, res: Respons
         await schema.parseAsync({
             body: req.body
         })
-        return next()
-
-    } catch (err) {
-        next(err);
+        return next();
     }
-}
+    catch (err) {
+        next(err)
+    }
+};
 
 export default validateRequest;

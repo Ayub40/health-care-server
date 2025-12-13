@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import config from "../../../config";
+// import catchAsync from "../../../shared/catchAsync";
+// import sendResponse from "../../../shared/sendResponse";
 import catchAsync from "../../shared/catchAsync";
-import { AuthServices } from "./auth.service";
 import sendResponse from "../../shared/sendResponse";
+import { AuthServices } from "./auth.service";
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {
     const accessTokenExpiresIn = config.jwt.expires_in as string;
@@ -197,7 +199,6 @@ const forgotPassword = catchAsync(async (req: Request, res: Response) => {
 
 const resetPassword = catchAsync(async (req: Request, res: Response) => {
     const token = req.headers.authorization || "";
-    // const token = req.headers.authorization?.split(" ")[1];
 
     await AuthServices.resetPassword(token, req.body);
 
