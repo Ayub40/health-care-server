@@ -26,5 +26,3 @@ Task: Admin and Patient er jonno update er kaj kora
    * Implement **update admin by ID** functionality.
    * Implement **delete admin by ID** functionality.
 
-
-
