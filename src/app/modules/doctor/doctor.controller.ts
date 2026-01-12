@@ -6,8 +6,6 @@ import { DoctorService } from './doctor.service';
 import pick from '../../shared/pick';
 import { doctorFilterableFields } from './doctor.constant';
 
-
-
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     const filters = pick(req.query, doctorFilterableFields);
 
@@ -76,9 +74,9 @@ const getAiSuggestion = catchAsync(async (req: Request, res: Response) => {
 
     // Basic validation
     if (!symptoms || typeof symptoms !== 'string' || symptoms.trim().length < 5) {
-        res.status(httpStatus.BAD_REQUEST).json({
+        return res.status(httpStatus.BAD_REQUEST).json({
             success: false,
-            message: 'Please provide valid symptoms for doctor suggestion.',
+            message: 'Please provide valid symptoms for doctor suggestion (minimum 5 characters).',
         });
     }
 
@@ -87,7 +85,7 @@ const getAiSuggestion = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: 'Doctor suggestion retrieval successfully',
+        message: 'AI doctor suggestions retrieved successfully',
         data: result,
     });
 });
