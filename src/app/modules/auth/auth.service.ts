@@ -3,10 +3,8 @@ import * as bcrypt from 'bcryptjs';
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
 import config from "../../../config";
-// import { jwtHelpers } from "../../../helpers/jwtHelpers";
-// import prisma from "../../../shared/prisma";
-import { jwtHelpers } from "../../helper/jwtHelper";
 import { prisma } from "../../shared/prisma";
+import { jwtHelpers } from "../../helper/jwtHelper";
 import ApiError from "../../errors/ApiError";
 import emailSender from "./emailSender";
 
@@ -236,7 +234,7 @@ const resetPassword = async (token: string | null, payload: { email?: string, pa
     }
     // Case 2: Authenticated user with needPasswordChange (newly created admin/doctor)
     else if (user && user.email) {
-        console.log({ user }, "need password change");
+        console.log({ user }, "needpassworchange");
         const authenticatedUser = await prisma.user.findUniqueOrThrow({
             where: {
                 email: user.email,

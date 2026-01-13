@@ -5,4 +5,17 @@ Command:
 
 Update Code Done:
 1. Doctor Module --> "src\app\modules\doctor"
-2. 
+2. Meta Module -->   "src\app\modules\meta"
+3. Admin -->         "src\app\modules\admin"
+4. Appointment -->   "src\app\modules\appointment"
+5. Auth -->          "src\app\modules\auth"
+6. Doctor Schedule   "src\app\modules\doctorSchedule"
+7. Patient -->       "src\app\modules\patient"
+8. Payment -->       "src\app\modules\payment"
+9. Prescription -->  "src\app\modules\prescription"
+10.Review -->        "src\app\modules\review"
+11.Schedule -->      "src\app\modules\schedule"
+12.Specialties -->   "src/app/modules/specialties"
+13.
+
+

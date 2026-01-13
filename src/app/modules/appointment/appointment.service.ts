@@ -1,6 +1,9 @@
 import { AppointmentStatus, PaymentStatus, Prisma, UserRole } from "@prisma/client";
 import httpStatus from "http-status";
 import { v4 as uuidv4 } from 'uuid';
+// import { paginationHelper } from "../../../helpers/paginationHelper";
+// import { stripe } from "../../../helpers/stripe";
+// import prisma from "../../../shared/prisma";
 import ApiError from "../../errors/ApiError";
 import { IAuthUser } from "../../interfaces/common";
 import { IPaginationOptions } from "../../interfaces/pagination";
@@ -31,12 +34,11 @@ const createAppointment = async (user: IAuthUser, payload: any) => {
         }
     });
 
-    const videoCallingId = uuidv4();
-
     // console.log({ patientId: patientData.id, doctorId: doctorData.id, scheduleId: payload.scheduleId, videoCallingId });
 
-    // multiple operation er karon e $transaction use kora hoyse,, "tnx" er jaigai age prisma silo
+    const videoCallingId = uuidv4();
 
+    // multiple operation er karon e $transaction use kora hoyse,, "tnx" er jaigai age prisma silo
     const result = await prisma.$transaction(async (tnx) => {
         const appointmentData = await tnx.appointment.create({
             data: {

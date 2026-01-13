@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service";
-import catchAsync from "../../shared/catchAsync";
-import sendResponse from "../../shared/sendResponse";
 import httpStatus from "http-status";
-import pick from "../../shared/pick";
 import { userFilterableFields } from "./user.constant";
 
 import { IAuthUser } from "../../interfaces/common";
+import catchAsync from "../../shared/catchAsync";
+import sendResponse from "../../shared/sendResponse";
+import pick from "../../shared/pick";
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
 
@@ -33,15 +33,10 @@ const createDoctor = catchAsync(async (req: Request, res: Response) => {
 const createPatient = catchAsync(async (req: Request, res: Response) => {
 
     const result = await userService.createPatient(req);
-    // console.log(result);
-    // console.log(req.body);
-    // console.log(req);
-
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "Patient Created successfuly!",
-        // data: ""
         data: result
     })
 });

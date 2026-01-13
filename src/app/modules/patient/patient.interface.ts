@@ -37,15 +37,3 @@ export type IPatientUpdate = {
   patientHealthData: IPatientHealthData,
   medicalReport: IMedicalReport
 }
-
-
-
-
-
-
-
-// export type IPatientFilterRequest = {
-//     searchTerm?: string | undefined;
-//     email?: string | undefined;
-//     contactNo?: string | undefined;
-// };

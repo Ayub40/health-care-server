@@ -1,12 +1,11 @@
 import { Prisma } from "@prisma/client";
-import { paginationHelper } from "../../helper/paginationHelper";
-import { prisma } from "../../shared/prisma";
 import { IAuthUser } from "../../interfaces/common";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import ApiError from "../../errors/ApiError";
 import httpStatus from "http-status";
 import { IDoctorScheduleFilterRequest } from "./doctorSchedule.interface";
-
+import { prisma } from "../../shared/prisma";
+import { paginationHelper } from "../../helper/paginationHelper";
 
 const insertIntoDB = async (user: any, payload: {
     scheduleIds: string[]

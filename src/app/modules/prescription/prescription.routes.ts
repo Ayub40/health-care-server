@@ -28,16 +28,3 @@ router.post(
 
 
 export const PrescriptionRoutes = router;
-
-
-// router.post(
-//     "/",
-//     auth(UserRole.DOCTOR),
-//     PrescriptionController.createPrescription
-// );
-
-// router.get(
-//     '/:id',
-//     PatientController.getByIdFromDB
-// );
-

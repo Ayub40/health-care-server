@@ -1,13 +1,14 @@
 import { Admin, Doctor, Patient, Prisma, UserRole, UserStatus } from "@prisma/client";
 import * as bcrypt from 'bcryptjs';
 import { Request } from "express";
-import { fileUploader } from "../../helper/fileUploader";
-import { paginationHelper } from "../../helper/paginationHelper";
-import { prisma } from "../../shared/prisma";
+import config from "../../../config";
 import { IAuthUser } from "../../interfaces/common";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import { userSearchAbleFields } from "./user.constant";
-import config from "../../../config";
+import { fileUploader } from "../../helper/fileUploader";
+import { prisma } from "../../shared/prisma";
+import { paginationHelper } from "../../helper/paginationHelper";
+
 
 const createAdmin = async (req: Request): Promise<Admin> => {
 
@@ -18,7 +19,6 @@ const createAdmin = async (req: Request): Promise<Admin> => {
         req.body.admin.profilePhoto = uploadToCloudinary?.secure_url
     }
 
-    // const hashedPassword: string = await bcrypt.hash(req.body.password, Number(config.salt_round))
     const hashedPassword: string = await bcrypt.hash(req.body.password, Number(config.salt_round))
 
     const userData = {
@@ -343,7 +343,6 @@ const getMyProfile = async (user: IAuthUser) => {
                 createdAt: true,
                 updatedAt: true,
                 patientHealthData: true,
-                // medicalReport: {
                 medicalReports: {
                     select: {
                         id: true,
