@@ -1,5 +1,5 @@
 import express from 'express';
-import { apiLimiter } from '../middlewares/rateLimiter';
+// import { apiLimiter } from '../middlewares/rateLimiter';
 import { userRoutes } from '../modules/user/user.routes';
 import { AdminRoutes } from '../modules/admin/admin.routes';
 import { AuthRoutes } from '../modules/auth/auth.routes';
@@ -16,7 +16,7 @@ import { MetaRoutes } from '../modules/meta/meta.routes';
 
 const router = express.Router();
 
-router.use(apiLimiter); // Apply to all routes
+// router.use(apiLimiter); // Apply to all routes
 
 const moduleRoutes = [
     {
