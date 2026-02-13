@@ -11,6 +11,9 @@ import { AppointmentService } from './app/modules/appointment/appointment.servic
 
 const app: Application = express();
 
+// For render/vercel proxy 
+app.set('trust proxy', 1);
+
 //  Stripe Webhook route 
 app.post(
     "/webhook",

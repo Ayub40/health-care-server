@@ -1,7 +1,7 @@
 import { UserRole } from '@prisma/client';
 import express from 'express';
 import auth from '../../middlewares/auth';
-import { paymentLimiter } from '../../middlewares/rateLimiter';
+// import { paymentLimiter } from '../../middlewares/rateLimiter';
 import validateRequest from '../../middlewares/validateRequest';
 import { AppointmentController } from './appointment.controller';
 import { AppointmentValidation } from './appointment.validation';
@@ -29,7 +29,7 @@ router.get(
 router.post(
     '/',
     auth(UserRole.PATIENT),
-    paymentLimiter,
+    // paymentLimiter,
     validateRequest(AppointmentValidation.createAppointment),
     AppointmentController.createAppointment
 );
@@ -44,7 +44,7 @@ router.post(
 router.post(
     '/:id/initiate-payment',
     auth(UserRole.PATIENT),
-    paymentLimiter,
+    // paymentLimiter,
     AppointmentController.initiatePayment
 );
 

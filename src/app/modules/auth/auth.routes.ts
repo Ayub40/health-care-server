@@ -1,14 +1,14 @@
 import { UserRole } from '@prisma/client';
 import express, { NextFunction, Request, Response } from 'express';
 import auth from '../../middlewares/auth';
-import { authLimiter } from '../../middlewares/rateLimiter';
+// import { authLimiter } from '../../middlewares/rateLimiter';
 import { AuthController } from './auth.controller';
 
 const router = express.Router();
 
 router.post(
     '/login',
-    authLimiter,
+    // authLimiter,
     AuthController.loginUser
 );
 
