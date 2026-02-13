@@ -30,6 +30,19 @@ router.post(
     }
 );
 
+
+// router.post(
+//     "/create-admin",
+//     fileUploader.upload.single("file"),
+//     (req, res, next) => {
+//         req.body = userValidation.createAdmin.parse(
+//             JSON.parse(req.body.data) 
+//         );
+//         return userController.createAdmin(req, res, next);
+//     }
+// );
+
+
 router.post(
     "/create-doctor",
     auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
